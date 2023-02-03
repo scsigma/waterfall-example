@@ -29,74 +29,73 @@ const allData = (config, sigmaData) => {
 
 const getData = (config, sigmaData) => {
 
-  if (allData(config, sigmaData)) {
+  // Async data conditional
+  if (!allData(config, sigmaData)) return null;
 
-    const data = sigmaData[config['months']].map((month, i) => {
-      
-      var d = new Date(month)
-      var month_string = d.toDateString().split(' ')[1];
-      var year_string = d.toDateString().split(' ')[3];
-
-      return {
-        name: month_string + ' ' + year_string,
-        y: sigmaData[config['profits']][i]
-      };
-    });
-
-    // add the last total balance object to the data list
-    data.push({
-      name: 'Total Profit',
-      isSum: true,
-      color: Highcharts.getOptions().colors[1]
-    })
+  const data = sigmaData[config['months']].map((month, i) => {
+    
+    var d = new Date(month)
+    var month_string = d.toDateString().split(' ')[1];
+    var year_string = d.toDateString().split(' ')[3];
 
     return {
-      chart: {
-        type: 'waterfall',
-      },
-      title: {
-        text: null
-      },
-      legend: {
-        enabled: false
-      },
-      tooltip: {
-        // pointFormat: "<b>${point.y:,.2f}</b> USD"
-        enabled: true,
-        formatter: function () {
-          var num = this.y / 1000;
-          var suffix = 'K';
-          var prefix = '';
-
-          if (Math.abs(num) > 999) {
-            // this is in the millions
-            num = num / 1000;
-            suffix = 'M';
-          }
-
-          if (num < 0) {
-            prefix = '-';
-          }
-          
-          var output = this.key;
-          return output+ `:   ${prefix}$` + Math.abs(num.toPrecision(3)).toString() + suffix + ' USD';
-        },
-        style: {
-            fontWeight: 'bold'
-        }
-      },
-      xAxis: {
-        type: "category",
-        lineWidth: 0
-      },
-      series: [{
-        upColor: Highcharts.getOptions().colors[2],
-        color: Highcharts.getOptions().colors[8],
-        data: data
-      }]
+      name: month_string + ' ' + year_string,
+      y: sigmaData[config['profits']][i]
     };
+  });
 
-  }
+  // add the last total balance object to the data list
+  data.push({
+    name: 'Total Profit',
+    isSum: true,
+    color: Highcharts.getOptions().colors[1]
+  })
+
+  return {
+    chart: {
+      type: 'waterfall',
+    },
+    title: {
+      text: null
+    },
+    legend: {
+      enabled: false
+    },
+    tooltip: {
+      // pointFormat: "<b>${point.y:,.2f}</b> USD"
+      enabled: true,
+      formatter: function () {
+        var num = this.y / 1000;
+        var suffix = 'K';
+        var prefix = '';
+
+        if (Math.abs(num) > 999) {
+          // this is in the millions
+          num = num / 1000;
+          suffix = 'M';
+        }
+
+        if (num < 0) {
+          prefix = '-';
+        }
+        
+        var output = this.key;
+        return output+ `:   ${prefix}$` + Math.abs(num.toPrecision(3)).toString() + suffix + ' USD';
+      },
+      style: {
+          fontWeight: 'bold'
+      }
+    },
+    xAxis: {
+      type: "category",
+      lineWidth: 0
+    },
+    series: [{
+      upColor: Highcharts.getOptions().colors[2],
+      color: Highcharts.getOptions().colors[8],
+      data: data
+    }]
+  };
 }
 
 
