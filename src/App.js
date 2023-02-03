@@ -15,42 +15,111 @@ HighchartsMore(Highcharts);
 
 client.config.configureEditorPanel([
   { name: "source", type: "element"},
-  { name: "open", type: "column", source: "source", allowMultiple: false},
-  { name: "high", type: "column", source: "source", allowMultiple: false},
-  { name: "low", type: "column", source: "source", allowMultiple: false},
-  { name: "close", type: "column", source: "source", allowMultiple: false},
-  { name: "date", type: "column", source: "source", allowMultiple: false},
-  { name: "volume", type: "column", source: "source", allowMultiple: false},
-  { name: "symbol", type: "column", source: "source", allowMultiple: false}
+  { name: "months", type: "column", source: "source", allowMultiple: false},
+  { name: "profits", type: "column", source: "source", allowMultiple: false}
 ]);
 
+const allData = (config, sigmaData) => {
+  if (!sigmaData[config['months']] && !sigmaData[config['profits']]) {
+    return false;
+  }
 
-const App = () => {
+  return true;
+}
+
+const getData = (config, sigmaData) => {
+
+  if (allData(config, sigmaData)) {
+
+    const data = sigmaData[config['months']].map((month, i) => {
+      
+      var d = new Date(month)
+      var month_string = d.toDateString().split(' ')[1];
+      var year_string = d.toDateString().split(' ')[3];
+
+      return {
+        name: month_string + ' ' + year_string,
+        y: sigmaData[config['profits']][i]
+      };
+    });
+
+    // add the last total balance object to the data list
+    data.push({
+      name: 'Balance',
+      isSum: true,
+      color: Highcharts.getOptions().colors[1]
+    })
+
+    return {
+      chart: {
+        type: 'waterfall',
+      },
+      title: {
+        text: 'Highcharts Waterfall'
+      },
+      legend: {
+        enabled: false
+      },
+      tooltip: {
+        // pointFormat: "<b>${point.y:,.2f}</b> USD"
+        enabled: true,
+        formatter: function () {
+          var num = this.y / 1000;
+          var suffix = 'K';
+          var prefix = '';
+
+          if (Math.abs(num) > 999) {
+            // this is in the millions
+            num = num / 1000;
+            suffix = 'M';
+          }
+
+          if (num < 0) {
+            prefix = '-';
+          }
+          
+          var output = this.key;
+          return output+ `:   ${prefix}$` + Math.abs(num.toPrecision(3)).toString() + suffix + ' USD';
+        },
+        style: {
+            fontWeight: 'bold'
+        }
+      },
+      xAxis: {
+        type: "category",
+        lineWidth: 0
+      },
+      series: [{
+        upColor: Highcharts.getOptions().colors[2],
+        color: Highcharts.getOptions().colors[8],
+        data: data
+      }]
+    };
+
+  }
+}
+
+
+
+const useMain = () => {
   
-  const options = {
-    chart: {
-      type: 'waterfall'
-    },
-    series: [{
-        data: [{
-        //    x: 1,
-            y: 120000
-        }, {
-        //    x: 2,
-            y: 569000
-        }, {
-        //    x: 3,
-            y: 231000
-        },  {
-        //    x: 4,
-            y: -342000
-        }, {
-        //    x: 5,
-            y: -233000
-        }]        
-    }]
-  };
+  // Receive config and element data objects from Sigma
+  const config = useConfig();
+  const sigmaData = useElementData(config.source);
   
+  const payload = useMemo(() => getData(config, sigmaData), [config, sigmaData]);
+
+  const [res, setRes] = useState(null);
+
+  useEffect(() => {
+    setRes(payload);
+  }, [payload]);
+
+  return res;
+}
+
+const App = () => { 
+  const options = useMain();
   return (
     <div>
       <HighchartsReact highcharts={Highcharts} options={options}/>
