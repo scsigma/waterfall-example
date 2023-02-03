@@ -45,7 +45,7 @@ const getData = (config, sigmaData) => {
 
     // add the last total balance object to the data list
     data.push({
-      name: 'Balance',
+      name: 'Total Profit',
       isSum: true,
       color: Highcharts.getOptions().colors[1]
     })
@@ -55,7 +55,7 @@ const getData = (config, sigmaData) => {
         type: 'waterfall',
       },
       title: {
-        text: 'Highcharts Waterfall'
+        text: null
       },
       legend: {
         enabled: false
