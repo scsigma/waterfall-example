@@ -13,35 +13,46 @@ import HighchartsReact from 'highcharts-react-official';
 HighchartsMore(Highcharts);
 
 
+// ------------------------------------------------------------------------------------------
+
 client.config.configureEditorPanel([
   { name: "source", type: "element"},
-  { name: "months", type: "column", source: "source", allowMultiple: false},
-  { name: "profits", type: "column", source: "source", allowMultiple: false}
+  { name: "x", type: "column", source: "source", allowMultiple: false},
+  { name: "y", type: "column", source: "source", allowMultiple: false}
 ]);
 
-const allData = (config, sigmaData) => {
-  if (!sigmaData[config['months']] && !sigmaData[config['profits']]) {
+// ------------------------------------------------------------------------------------------
+
+const allSigmaDataReceived = (config, sigmaData) => {
+  if (!sigmaData[config['x']] && !sigmaData[config['y']]) {
     return false;
   }
 
   return true;
 }
 
-const getData = (config, sigmaData) => {
+//
+
+const getSigmaData = (config, sigmaData) => {
 
   // Async data conditional
-  if (!allData(config, sigmaData)) return null;
+  if (!allSigmaDataReceived(config, sigmaData)) return null;
 
-  const data = sigmaData[config['months']].map((month, i) => {
+  // Create the data object that fits into the highcharts series
+  // Call to attention how the formatting is for highcharts
+  const data = sigmaData[config['x']].map((month, i) => {
     
-    var d = new Date(month)
-    var month_string = d.toDateString().split(' ')[1];
-    var year_string = d.toDateString().split(' ')[3];
+    let date = new Date(month)
+    let month_string = date.toDateString().split(' ')[1];
+    let year_string = date.toDateString().split(' ')[3];
 
-    return {
+    let res = {
       name: month_string + ' ' + year_string,
-      y: sigmaData[config['profits']][i]
+      y: sigmaData[config['y']][i]
     };
+
+
+    return res;
   });
 
   // add the last total balance object to the data list
@@ -56,39 +67,37 @@ const getData = (config, sigmaData) => {
       type: 'waterfall',
     },
     title: {
-      text: null
+      text: 'Waterfall Chart'
     },
     legend: {
       enabled: false
     },
-    tooltip: {
-      // pointFormat: "<b>${point.y:,.2f}</b> USD"
-      enabled: true,
-      formatter: function () {
-        var num = this.y / 1000;
-        var suffix = 'K';
-        var prefix = '';
-
-        if (Math.abs(num) > 999) {
-          // this is in the millions
-          num = num / 1000;
-          suffix = 'M';
-        }
-
-        if (num < 0) {
-          prefix = '-';
-        }
-        
-        var output = this.key;
-        return output+ `:   ${prefix}$` + Math.abs(num.toPrecision(3)).toString() + suffix + ' USD';
-      },
-      style: {
-          fontWeight: 'bold'
-      }
-    },
     xAxis: {
       type: "category",
-      lineWidth: 0
+    },
+    yAxis: {
+      enabled: true,
+      title: {
+        text: 'Profit'
+      }
+    },
+    tooltip: {
+      // Default Point format
+      // pointFormat: "<b>${point.y:,.2f}</b> USD"
+
+      // More Clean Tooltip formatter
+      enabled: true,
+      formatter: function () {
+
+        let num = Math.abs(this.y) >= 1000000 ? this.y / 1000000 : this.y / 1000;
+        let prefix = this.y >= 0 ? '$' : '-$';
+        let suffix = Math.abs(this.y) >= 1000000 ? 'M USD' : 'K USD';
+        
+        let output_num = Math.abs(num.toPrecision(3)).toString() 
+
+        let month_year = this.key;
+        return `${month_year} :    ${prefix + output_num + suffix}`;
+      }
     },
     series: [{
       upColor: Highcharts.getOptions().colors[2],
@@ -106,7 +115,7 @@ const useMain = () => {
   const config = useConfig();
   const sigmaData = useElementData(config.source);
   
-  const payload = useMemo(() => getData(config, sigmaData), [config, sigmaData]);
+  const payload = useMemo(() => getSigmaData(config, sigmaData), [config, sigmaData]);
 
   const [res, setRes] = useState(null);
 
