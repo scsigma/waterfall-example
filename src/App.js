@@ -20,7 +20,7 @@ client.config.configureEditorPanel([
   { name: "x", type: "column", source: "source", allowMultiple: false},
   { name: "y", type: "column", source: "source", allowMultiple: false},
   { name: "date grouping", type: "column", source: "source", allowMultiple: false },
-  { name: "Show Final Total Bar? (Y/N)", type: "text", defaultValue: "N" },
+  { name: "Show Final Total Bar? (Y/N)", type: "text", defaultValue: "Y" },
 
 ]);
 
