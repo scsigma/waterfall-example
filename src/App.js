@@ -108,7 +108,7 @@ const getSigmaData = (config, sigmaData) => {
       type: 'waterfall',
     },
     title: {
-      text: 'Waterfall Chart'
+      text: 'Profits'
     },
     legend: {
       enabled: false
