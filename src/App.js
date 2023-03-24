@@ -43,6 +43,9 @@ const getSigmaData = (config, sigmaData) => {
   // This will tell us what to group by: day, week, month, year
   let date_grouping = sigmaData[config["date grouping"]][0];
 
+  // -------------------------------------------------------
+  // THIS IS WHERE THE DATE SORTING WILL OCCUR
+
   // Create the data object that fits into the highcharts series
   // Call to attention how the formatting is for highcharts
   const data = sigmaData[config['x']].map((date_input, i) => {
