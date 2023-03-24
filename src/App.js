@@ -44,7 +44,21 @@ const getSigmaData = (config, sigmaData) => {
   let date_grouping = sigmaData[config["date grouping"]][0];
 
   // -------------------------------------------------------
-  // THIS IS WHERE THE DATE SORTING WILL OCCUR
+  // Sort the dates coming in to the data
+
+  // 1. combine the x and y arrays into an object
+  let arr_unsorted = []
+  for (let i = 0; i < sigmaData[config['x']].length; i++) {
+    arr_unsorted.push({'x': sigmaData[config['x']][i], 'y': sigmaData[config['y']][i]})
+  }
+
+  let sorted_arr = arr_unsorted.sort((a,b) => {
+    return a.x - b.x
+  })
+
+  // Reassign sigmaData object values here for x and y axis
+  sigmaData[config['x']] = sorted_arr.map((val) => val.x)
+  sigmaData[config['y']] = sorted_arr.map((val) => val.y)
 
   // Create the data object that fits into the highcharts series
   // Call to attention how the formatting is for highcharts
