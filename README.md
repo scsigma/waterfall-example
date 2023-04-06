@@ -20,8 +20,7 @@ You may also see any lint errors in the console.
 
 
 # Control Panel and Table Shape
-
-![Screenshot 2023-04-06 at 2 52 58 PM](https://user-images.githubusercontent.com/120054623/230500889-21eadf0a-1127-4cac-895d-0fe7a33b69c6.png)  ![Screenshot 2023-04-06 at 2 53 17 PM](https://user-images.githubusercontent.com/120054623/230500985-e2ea1f36-993c-4c54-8dfb-37883ae66a3a.png)
+<img src="https://user-images.githubusercontent.com/120054623/230500889-21eadf0a-1127-4cac-895d-0fe7a33b69c6.png" width="150"/> <img src="https://user-images.githubusercontent.com/120054623/230500985-e2ea1f36-993c-4c54-8dfb-37883ae66a3a.png" width="650"/>
 
 
 ### Note:
