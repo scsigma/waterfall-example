@@ -27,7 +27,7 @@ client.config.configureEditorPanel([
 // ------------------------------------------------------------------------------------------
 
 const allSigmaDataReceived = (config, sigmaData) => {
-  if (!sigmaData[config['x']] && !sigmaData[config['y']]) {
+  if (!sigmaData[config.x] && !sigmaData[config.y]) {
     return false;
   }
 
@@ -41,18 +41,18 @@ const getSigmaData = (config, sigmaData) => {
   if (!allSigmaDataReceived(config, sigmaData)) return null;
 
   // This will tell us what to group by: day, week, month, year
-  let date_grouping = sigmaData[config["date grouping"]][0];
+  const date_grouping = sigmaData[config["date grouping"]][0];
 
   // -------------------------------------------------------
   // Sort the dates coming in to the data
 
   // 1. combine the x and y arrays into an object
-  let arr_unsorted = []
+  const arr_unsorted = []
   for (let i = 0; i < sigmaData[config['x']].length; i++) {
     arr_unsorted.push({'x': sigmaData[config['x']][i], 'y': sigmaData[config['y']][i]})
   }
 
-  let sorted_arr = arr_unsorted.sort((a,b) => {
+  const sorted_arr = arr_unsorted.sort((a,b) => {
     return a.x - b.x
   })
 
@@ -64,10 +64,14 @@ const getSigmaData = (config, sigmaData) => {
   // Call to attention how the formatting is for highcharts
   const data = sigmaData[config['x']].map((date_input, i) => {
     
-    let date = new Date(date_input)
-    let month_string = date.toDateString().split(' ')[1];
-    let day_num_string = date.toDateString().split(' ')[2];
-    let year_string = date.toDateString().split(' ')[3];
+    const date = new Date(date_input)
+    // let month_string = date.toDateString().split(' ')[1];
+    // let day_num_string = date.toDateString().split(' ')[2];
+    // let year_string = date.toDateString().split(' ')[3];
+    let month = date.toDateString().split(' ')[1];
+    let day = date.toDateString().split(' ')[2];
+    let year = date.toDateString().split(' ')[3];
+    // const [, month, day, year] = date.toDateString().split('');
 
     // output
     let res = {}
@@ -77,29 +81,29 @@ const getSigmaData = (config, sigmaData) => {
       case 'day':
         // day object
         res = {
-          name: month_string + ' ' + day_num_string + ' ' + year_string,
-          y: sigmaData[config['y']][i]
+          name: month + ' ' + day + ' ' + year,
+          y: sigmaData[config.y][i]
         };
         break;
       case 'week':
         // week object
         res = {
-          name: month_string + ' ' + day_num_string + ' ' + year_string,
-          y: sigmaData[config['y']][i]
+          name: month + ' ' + day + ' ' + year,
+          y: sigmaData[config.y][i]
         };
         break;
       case 'month':
         // month object
         res = {
-          name: month_string + ' ' + year_string,
-          y: sigmaData[config['y']][i]
+          name: month + ' ' + year,
+          y: sigmaData[config.y][i]
         };
         break;
       case 'year':
         // year object
         res = {
-          name: year_string,
-          y: sigmaData[config['y']][i]
+          name: year,
+          y: sigmaData[config.y][i]
         };
         break;
 
@@ -145,9 +149,11 @@ const getSigmaData = (config, sigmaData) => {
 
       // More Clean Tooltip formatter
       enabled: true,
-      formatter: function () {
+      formatter: () => {
 
         // now i need to figure out the formatting here
+        console.log(this.y)
+        console.log('hello')
         let [number, zeros] = (this.y).toPrecision(3).split('e+'); // if this.y=750,000, output is -> ['7.50','5']
 
         // conver this number to absolute value
@@ -210,8 +216,8 @@ const getSigmaData = (config, sigmaData) => {
 
 
         // determine the prefix and the date name to be shown in the chart
-        let prefix = this.y >= 0 ? '$' : '-$';
-        let date_name = this.key;
+        const prefix = this.y >= 0 ? '$' : '-$';
+        const date_name = this.key;
 
         return `${date_name} :    ${prefix + output_num + suffix + ' USD'}`;
       }
