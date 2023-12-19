@@ -21,6 +21,7 @@ client.config.configureEditorPanel([
   { name: "y", type: "column", source: "source", allowMultiple: false},
   { name: "date grouping", type: "column", source: "source", allowMultiple: false },
   { name: "Show Final Total Bar? (Y/N)", type: "text", defaultValue: "Y" },
+  { name: "Chart Title", type: "text", defaultValue: "Profits"}
 
 ]);
 
@@ -118,7 +119,7 @@ const getSigmaData = (config, sigmaData) => {
   // add the last total balance object to the data list if the show final total bar is Y
   if (client.config.getKey("Show Final Total Bar? (Y/N)") === 'Y') {
     data.push({
-      name: 'Total Profit',
+      name: 'Total',
       isSum: true,
       color: Highcharts.getOptions().colors[1]
     })
@@ -129,7 +130,7 @@ const getSigmaData = (config, sigmaData) => {
       type: 'waterfall',
     },
     title: {
-      text: 'Profits'
+      text: client.config.getKey("Chart Title")
     },
     legend: {
       enabled: false
@@ -140,7 +141,7 @@ const getSigmaData = (config, sigmaData) => {
     yAxis: {
       enabled: true,
       title: {
-        text: 'Profit'
+        text: client.config.getKey("Chart Title")
       }
     },
     tooltip: {
