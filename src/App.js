@@ -21,7 +21,8 @@ client.config.configureEditorPanel([
   { name: "y", type: "column", source: "source", allowMultiple: false},
   { name: "date grouping", type: "column", source: "source", allowMultiple: false },
   { name: "Show Final Total Bar? (Y/N)", type: "text", defaultValue: "Y" },
-  { name: "Chart Title", type: "text", defaultValue: "Profits"}
+  { name: "Chart Title", type: "text", defaultValue: "Profits"},
+  { name: "Starting Bar", type: "column", source: "source", allowMultiple: false}
 
 ]);
 
@@ -121,6 +122,15 @@ const getSigmaData = (config, sigmaData) => {
     data.push({
       name: 'Total',
       isSum: true,
+      color: Highcharts.getOptions().colors[1]
+    })
+  }
+
+  // PREPEND THE DATA ARRAY WITH THE STARTING VALUE
+  if (sigmaData[config['Starting Bar']] !== undefined) {
+    data.unshift({
+      name: 'Starting Bar',
+      y: sigmaData[config['Starting Bar']][0],
       color: Highcharts.getOptions().colors[1]
     })
   }
