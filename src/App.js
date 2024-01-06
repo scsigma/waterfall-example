@@ -152,7 +152,8 @@ const getSigmaData = (config, sigmaData) => {
       enabled: true,
       title: {
         text: client.config.getKey("Chart Title")
-      }
+      },
+      min: 3400000000
     },
     tooltip: {
       // Default Point format
