@@ -22,7 +22,9 @@ client.config.configureEditorPanel([
   { name: "date grouping", type: "column", source: "source", allowMultiple: false },
   { name: "Show Final Total Bar? (Y/N)", type: "text", defaultValue: "Y" },
   { name: "Chart Title", type: "text", defaultValue: "Profits"},
-  { name: "Starting Bar", type: "column", source: "source", allowMultiple: false}
+  { name: "Starting Bar", type: "column", source: "source", allowMultiple: false},
+  { name: "Y-axis min value", type: "text", defaultValue: "0"},
+  { name: "Starting Bar Name", type: "text", defaultValue: "PL"}
 
 ]);
 
@@ -129,7 +131,7 @@ const getSigmaData = (config, sigmaData) => {
   // PREPEND THE DATA ARRAY WITH THE STARTING VALUE
   if (sigmaData[config['Starting Bar']] !== undefined) {
     data.unshift({
-      name: 'Starting Bar',
+      name: client.config.getKey("Starting Bar Name"),
       y: sigmaData[config['Starting Bar']][0],
       color: Highcharts.getOptions().colors[1]
     })
@@ -153,7 +155,7 @@ const getSigmaData = (config, sigmaData) => {
       title: {
         text: client.config.getKey("Chart Title")
       },
-      min: 3400000000
+      min: Number(client.config.getKey("Y-axis min value"))
     },
     tooltip: {
       // Default Point format
