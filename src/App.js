@@ -146,15 +146,13 @@ const getSigmaData = (config, sigmaData) => {
     },
     tooltip: {
       // Default Point format
+      enabled: true,
       // pointFormat: "<b>${point.y:,.2f}</b> USD"
 
       // More Clean Tooltip formatter
-      enabled: true,
-      formatter: () => {
 
-        // now i need to figure out the formatting here
-        console.log(this.y)
-        console.log('hello')
+      formatter: function() {
+
         let [number, zeros] = (this.y).toPrecision(3).split('e+'); // if this.y=750,000, output is -> ['7.50','5']
 
         // conver this number to absolute value
