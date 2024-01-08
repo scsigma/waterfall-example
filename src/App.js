@@ -24,7 +24,8 @@ client.config.configureEditorPanel([
   { name: "Chart Title", type: "text", defaultValue: "Profits"},
   { name: "Starting Bar", type: "column", source: "source", allowMultiple: false},
   { name: "Y-axis min value", type: "text", defaultValue: "0"},
-  { name: "Starting Bar Name", type: "text", defaultValue: "PL"}
+  { name: "Starting Bar Name", type: "text", defaultValue: "PL"},
+  { name: "Total Bar Name", type: "text", defaultValue: "Total"}
 
 ]);
 
@@ -122,7 +123,7 @@ const getSigmaData = (config, sigmaData) => {
   // add the last total balance object to the data list if the show final total bar is Y
   if (client.config.getKey("Show Final Total Bar? (Y/N)") === 'Y') {
     data.push({
-      name: 'Total',
+      name: client.config.getKey("Total Bar Name"),
       isSum: true,
       color: Highcharts.getOptions().colors[1]
     })
